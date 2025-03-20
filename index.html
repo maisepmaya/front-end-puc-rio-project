@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" href="styles.css" />
+
+    <title>Projeto</title>
+  </head>
+
+  <body>
+    <!-- Modal para criar ficha -->
+    <div id="modal">
+      <div class="modal-content">
+        <div id="create-sheet">
+          <div class="header">
+            <p>Criar ficha</p>
+            <button onclick="toggleModal(false)" class="closeModal">X</button>
+          </div>
+
+          <div class="input">
+            <label for="name">Nome:</label>
+            <input
+              type="text"
+              id="sheet-name"
+              name="name"
+              maxlength="120"
+              placeholder="Insira o nome do personagem..."
+              data-value=""
+              value=""
+            />
+          </div>
+
+          <div class="number-attributes">
+            <div class="input">
+              <label for="level">Nível:</label>
+              <input
+                type="number"
+                min="1"
+                data-value="1"
+                value="1"
+                id="sheet-level"
+              />
+            </div>
+            <div class="input">
+              <label for="life">Vida:</label>
+              <input
+                type="number"
+                min="1"
+                id="sheet-life"
+                name="life"
+                data-value="1"
+                value="1"
+              />
+            </div>
+            <div class="input">
+              <label for="ac">CA:</label>
+              <input
+                type="number"
+                min="1"
+                id="sheet-ac"
+                name="ac"
+                data-value="1"
+                value="1"
+              />
+            </div>
+          </div>
+
+          <div class="form-container">
+            <div class="select-image">
+              <label for="image">Icon:</label>
+              <img id="sheet-image" src="img/flaticon/dice-d20.png" />
+              <select
+                onchange="selectImageForm()"
+                data-value="img/flaticon/dice-d20.png"
+                id="sheet-select-image"
+              >
+                <option value="img/flaticon/dice-d20.png">Dado</option>
+                <option value="img/flaticon/cthulhu.png">Cthulhu</option>
+                <option value="img/flaticon/cyclops.png">Ciclope</option>
+                <option value="img/flaticon/final-boss.png">Chefe Final</option>
+                <option value="img/flaticon/grim-reaper.png">Ceifador</option>
+                <option value="img/flaticon/minotaur.png">Minotauro</option>
+                <option value="img/flaticon/ogre.png">Ogro</option>
+                <option value="img/flaticon/snake.png">Cobra</option>
+                <option value="img/flaticon/swamp-monster.png">
+                  Monstro do Pântano
+                </option>
+                <option value="img/flaticon/troll.png">Troll</option>
+                <option value="img/flaticon/werewolf.png">Lobisomem</option>
+                <option value="img/flaticon/wizard.png">Mago</option>
+              </select>
+            </div>
+            <div class="input">
+              <label for="information">Informações:</label>
+              <textarea
+                name="information"
+                id="sheet-info"
+                data-value=""
+                value=""
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="button">
+            <button
+              class="create-sheet-btn scale-on-hover"
+              onclick="createSheet()"
+            >
+              Salvar
+            </button>
+            <button
+              class="close-modal scale-on-hover"
+              onclick="toggleModal(false)"
+            >
+              Cancelar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="main-container">
+      <!-- Selecionar ficha  -->
+      <div id="sidebar-bg">
+        <img src="img/CONTAINER.png" class="full-background" />
+        <div id="sidebar">
+          <h1>Fichas</h1>
+          <div id="sheet-list-container">
+            <div id="sheet-list">
+              <!-- Items vão vir aqui -->
+              <!-- <div
+                class="item"
+                data-id="itemid"
+                onclick="handleSheetClick('itemid')"
+              >
+                <div class="picture">--</div>
+                <div class="content-bg">
+                  <img src="img/TAG.png" class="full-background" />
+                  <div class="content">
+                    <p>ItemNome</p>
+                    <p>1</p>
+                    <button
+                      class="trash"
+                      id="delete-sheet"
+                      onclick="deleteSheet('teste')"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        fill="#000000"
+                        viewBox="0 0 256 256"
+                      >
+                        <path
+                          d="M216,48H180V36A28,28,0,0,0,152,8H104A28,28,0,0,0,76,36V48H40a12,12,0,0,0,0,24h4V208a20,20,0,0,0,20,20H192a20,20,0,0,0,20-20V72h4a12,12,0,0,0,0-24ZM100,36a4,4,0,0,1,4-4h48a4,4,0,0,1,4,4V48H100Zm88,168H68V72H188ZM116,104v64a12,12,0,0,1-24,0V104a12,12,0,0,1,24,0Zm48,0v64a12,12,0,0,1-24,0V104a12,12,0,0,1,24,0Z"
+                        ></path>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div> -->
+            </div>
+
+            <button onclick="toggleModal(true)" id="btn-add-sheet">
+              <svg
+                class="scale-on-hover"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="#ffffff"
+                viewBox="0 0 256 256"
+              >
+                <path
+                  d="M128,20A108,108,0,1,0,236,128,108.12,108.12,0,0,0,128,20Zm0,192a84,84,0,1,1,84-84A84.09,84.09,0,0,1,128,212Zm52-84a12,12,0,0,1-12,12H140v28a12,12,0,0,1-24,0V140H88a12,12,0,0,1,0-24h28V88a12,12,0,0,1,24,0v28h28A12,12,0,0,1,180,128Z"
+                ></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grid com cartões  -->
+      <div id="grid-container">
+        <div class="grid">
+          <div id="card-list">
+            <!-- Cards vão vir aqui -->
+            <!-- <div class="card" data-id="cardiD">
+              <img class="full-background" src="img/CARD.png" />
+
+              <div class="header">
+                <p>0 - Nome exemplo</p>
+                <p>1</p>
+                <button onclick="removeCard('cardiD')" class="close-card">
+                  X
+                </button>
+              </div>
+              <div class="middle">
+                <div class="life">
+                  <button
+                    class="btn-full-life"
+                    onclick="changeLife('cardiD','reset')"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="#fffafa"
+                      viewBox="0 0 256 256"
+                    >
+                      <path
+                        d="M88,108H40A12,12,0,0,1,28,96V48a12,12,0,0,1,24,0V67l7.8-7.8A99.42,99.42,0,0,1,130,29.94h.56a99.38,99.38,0,0,1,69.87,28.47,12,12,0,0,1-16.78,17.16,76,76,0,0,0-106.84.63L69,84H88a12,12,0,0,1,0,24Zm128,40H168a12,12,0,0,0,0,24h19l-7.8,7.8a75.55,75.55,0,0,1-53.32,22.26h-.43a75.49,75.49,0,0,1-53.09-21.63,12,12,0,0,0-16.78,17.16,99.38,99.38,0,0,0,69.87,28.47H126a99.42,99.42,0,0,0,70.16-29.29L204,189v19a12,12,0,0,0,24,0V160A12,12,0,0,0,216,148Z"
+                      ></path>
+                    </svg>
+                  </button>
+                  <img class="bg-banner" src="img/BANNER.png" />
+                  <div
+                    class="btn-action damage"
+                    onclick="changeLife('cardiD','minus')"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="20"
+                      fill="#000000"
+                      viewBox="0 0 256 256"
+                    >
+                      <path
+                        d="M228,128a12,12,0,0,1-12,12H40a12,12,0,0,1,0-24H216A12,12,0,0,1,228,128Z"
+                      ></path>
+                    </svg>
+                  </div>
+
+                  <img class="bg-heart" src="img/HEART.png" />
+                  <input
+                    type="number"
+                    class="life-display"
+                    onblur="changeLife('cardiD','lifeDisplay')"
+                    value="20"
+                  />
+
+                  <input type="number" class="life-controls" value="1" />
+
+                  <div
+                    class="btn-action cure"
+                    onclick="changeLife('$cardiD','plus')"
+                    id="cure"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="20"
+                      fill="#000000"
+                      viewBox="0 0 256 256"
+                    >
+                      <path
+                        d="M228,128a12,12,0,0,1-12,12H140v76a12,12,0,0,1-24,0V140H40a12,12,0,0,1,0-24h76V40a12,12,0,0,1,24,0v76h76A12,12,0,0,1,228,128Z"
+                      ></path>
+                    </svg>
+                  </div>
+                </div>
+
+                <div class="ac">
+                  <img src="img/SHILD.png" class="full-background bg-shield" />
+                  <p class="ac-display">15</p>
+                </div>
+              </div>
+
+              <textarea
+                class="info"
+                onblur="saveInfo('cardiD')"
+                placeholder="Informações..."
+              >
+ Informações aqui </textarea
+              >
+            </div> -->
+          </div>
+        </div>
+
+        <div id="grid-controls">
+          <button class="scale-on-hover" onclick="resetBoard()">Reset</button>
+        </div>
+      </div>
+    </div>
+    <script src="scripts.js"></script>
+  </body>
+</html>
