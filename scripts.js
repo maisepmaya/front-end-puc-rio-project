@@ -29,8 +29,6 @@ const getAllSheetAPI = async () => {
 };
 
 const createSheetAPI = async (newSheet) => {
-  myHeader = new Headers();
-  myHeaders.append("accept", "application/json");
   const formData = new FormData();
 
   console.log("Objeto -------------------------------------");
@@ -40,7 +38,6 @@ const createSheetAPI = async (newSheet) => {
   });
 
   console.log("FormData -----------------------------------");
-
   for (var pair of formData.entries()) {
     console.log(`${pair[0]}: ${typeof pair[1]}`);
   }
@@ -48,7 +45,6 @@ const createSheetAPI = async (newSheet) => {
   let url = "http://127.0.0.1:5000/sheet/create";
   const res = await fetch(url, {
     method: "post",
-    headers: myHeader,
     body: formData,
   }).then((response) => {
     if (response.status == 200) return response.json();
