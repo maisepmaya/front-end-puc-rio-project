@@ -7,6 +7,13 @@
 
     <link rel="stylesheet" href="styles.css" />
 
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Marhey:wght@300..700&display=swap"
+      rel="stylesheet"
+    />
+
     <title>Projeto</title>
   </head>
 
@@ -15,9 +22,16 @@
     <div id="modal">
       <div class="modal-content">
         <div id="create-sheet">
+          <div id="credit">
+            Icons made by
+            <a href="https://www.freepik.com" title="Freepik">Freepik</a>
+          </div>
           <div class="header">
-            <p>Criar ficha</p>
-            <button onclick="toggleModal(false)" class="closeModal">X</button>
+            <p>CRIAR FICHA</p>
+            <button
+              onclick="toggleModal(false)"
+              class="close-btn scale-on-hover"
+            ></button>
           </div>
 
           <div class="input">
@@ -39,6 +53,7 @@
               <input
                 type="number"
                 min="1"
+                max="99"
                 data-value="1"
                 value="1"
                 id="sheet-level"
@@ -60,6 +75,7 @@
               <input
                 type="number"
                 min="1"
+                max="99"
                 id="sheet-ac"
                 name="ac"
                 data-value="1"
@@ -74,23 +90,26 @@
               <img id="sheet-image" src="img/flaticon/dice-d20.png" />
               <select
                 onchange="selectImageForm()"
-                data-value="img/flaticon/dice-d20.png"
+                data-value="img/flaticon/dice.png"
                 id="sheet-select-image"
               >
-                <option value="img/flaticon/dice-d20.png">Dado</option>
-                <option value="img/flaticon/cthulhu.png">Cthulhu</option>
+                <option value="img/flaticon/dice.png">Dado</option>
+                <option value="img/flaticon/banshee.png">Banshee</option>
                 <option value="img/flaticon/cyclops.png">Ciclope</option>
-                <option value="img/flaticon/final-boss.png">Chefe Final</option>
+                <option value="img/flaticon/devil.png">Demonio</option>
+                <option value="img/flaticon/ghost.png">Fantasma</option>
+                <option value="img/flaticon/goblin.png">Goblin</option>
                 <option value="img/flaticon/grim-reaper.png">Ceifador</option>
-                <option value="img/flaticon/minotaur.png">Minotauro</option>
-                <option value="img/flaticon/ogre.png">Ogro</option>
-                <option value="img/flaticon/snake.png">Cobra</option>
-                <option value="img/flaticon/swamp-monster.png">
-                  Monstro do Pântano
-                </option>
-                <option value="img/flaticon/troll.png">Troll</option>
+                <option value="img/flaticon/knight.png">Cavalheiro</option>
+                <option value="img/flaticon/monster.png">Monstro</option>
+                <option value="img/flaticon/ninja.png">Ninja</option>
+                <option value="img/flaticon/orc.png">Orc</option>
+                <option value="img/flaticon/pirate.png">Pirata</option>
+                <option value="img/flaticon/vampire.png">Vampiro</option>
+                <option value="img/flaticon/viking.png">Viking</option>
                 <option value="img/flaticon/werewolf.png">Lobisomem</option>
                 <option value="img/flaticon/wizard.png">Mago</option>
+                <option value="img/flaticon/zombie.png">Zumbi</option>
               </select>
             </div>
             <div class="input">
@@ -104,7 +123,7 @@
             </div>
           </div>
 
-          <div class="button">
+          <div id="modal-button">
             <button
               class="create-sheet-btn scale-on-hover"
               onclick="createSheet()"
@@ -112,7 +131,7 @@
               Salvar
             </button>
             <button
-              class="close-modal scale-on-hover"
+              class="close-modal-btn scale-on-hover"
               onclick="toggleModal(false)"
             >
               Cancelar
@@ -122,12 +141,19 @@
       </div>
     </div>
 
+    <div id="load-page">
+      <div class="loading">
+        <div class="spinner"></div>
+      </div>
+    </div>
     <div id="main-container">
       <!-- Selecionar ficha  -->
       <div id="sidebar-bg">
-        <img src="img/CONTAINER.png" class="full-background" />
         <div id="sidebar">
-          <h1>Fichas</h1>
+          <div id="listTitle">
+            <h1>FICHAS</h1>
+          </div>
+
           <div id="sheet-list-container">
             <div id="sheet-list">
               <!-- Items vão vir aqui -->
@@ -136,48 +162,36 @@
                 data-id="itemid"
                 onclick="handleSheetClick('itemid')"
               >
-                <div class="picture">--</div>
-                <div class="content-bg">
-                  <img src="img/TAG.png" class="full-background" />
-                  <div class="content">
-                    <p>ItemNome</p>
-                    <p>1</p>
-                    <button
-                      class="trash"
-                      id="delete-sheet"
-                      onclick="deleteSheet('teste')"
+                <div class="picture"></div>
+                <p>ItemNome</p>
+                <div class="content">
+                  <p class="level">1</p>
+                  <button
+                    class="trash"
+                    id="delete-sheet"
+                    onclick="deleteSheet('teste')"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      fill="#000000"
+                      viewBox="0 0 256 256"
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        fill="#000000"
-                        viewBox="0 0 256 256"
-                      >
-                        <path
-                          d="M216,48H180V36A28,28,0,0,0,152,8H104A28,28,0,0,0,76,36V48H40a12,12,0,0,0,0,24h4V208a20,20,0,0,0,20,20H192a20,20,0,0,0,20-20V72h4a12,12,0,0,0,0-24ZM100,36a4,4,0,0,1,4-4h48a4,4,0,0,1,4,4V48H100Zm88,168H68V72H188ZM116,104v64a12,12,0,0,1-24,0V104a12,12,0,0,1,24,0Zm48,0v64a12,12,0,0,1-24,0V104a12,12,0,0,1,24,0Z"
-                        ></path>
-                      </svg>
-                    </button>
-                  </div>
+                      <path
+                        d="M216,48H180V36A28,28,0,0,0,152,8H104A28,28,0,0,0,76,36V48H40a12,12,0,0,0,0,24h4V208a20,20,0,0,0,20,20H192a20,20,0,0,0,20-20V72h4a12,12,0,0,0,0-24ZM100,36a4,4,0,0,1,4-4h48a4,4,0,0,1,4,4V48H100Zm88,168H68V72H188ZM116,104v64a12,12,0,0,1-24,0V104a12,12,0,0,1,24,0Zm48,0v64a12,12,0,0,1-24,0V104a12,12,0,0,1,24,0Z"
+                      ></path>
+                    </svg>
+                  </button>
                 </div>
               </div> -->
             </div>
 
-            <button onclick="toggleModal(true)" id="btn-add-sheet">
-              <svg
-                class="scale-on-hover"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                fill="#ffffff"
-                viewBox="0 0 256 256"
-              >
-                <path
-                  d="M128,20A108,108,0,1,0,236,128,108.12,108.12,0,0,0,128,20Zm0,192a84,84,0,1,1,84-84A84.09,84.09,0,0,1,128,212Zm52-84a12,12,0,0,1-12,12H140v28a12,12,0,0,1-24,0V140H88a12,12,0,0,1,0-24h28V88a12,12,0,0,1,24,0v28h28A12,12,0,0,1,180,128Z"
-                ></path>
-              </svg>
-            </button>
+            <button
+              onclick="toggleModal(true)"
+              id="btn-add-sheet"
+              class="scale-on-hover"
+            ></button>
           </div>
         </div>
       </div>
@@ -188,52 +202,32 @@
           <div id="card-list">
             <!-- Cards vão vir aqui -->
             <!-- <div class="card" data-id="cardiD">
-              <img class="full-background" src="img/CARD.png" />
-
               <div class="header">
-                <p>0 - Nome exemplo</p>
-                <p>1</p>
-                <button onclick="removeCard('cardiD')" class="close-card">
-                  X
-                </button>
+                <p>Nome exemplo</p>
+                <p class="level">1</p>
               </div>
+
+              <button
+                onclick="removeCard('cardiD')"
+                class="close-btn scale-on-hover"
+              ></button>
+
               <div class="middle">
                 <div class="life">
-                  <button
-                    class="btn-full-life"
-                    onclick="changeLife('cardiD','reset')"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      fill="#fffafa"
-                      viewBox="0 0 256 256"
-                    >
-                      <path
-                        d="M88,108H40A12,12,0,0,1,28,96V48a12,12,0,0,1,24,0V67l7.8-7.8A99.42,99.42,0,0,1,130,29.94h.56a99.38,99.38,0,0,1,69.87,28.47,12,12,0,0,1-16.78,17.16,76,76,0,0,0-106.84.63L69,84H88a12,12,0,0,1,0,24Zm128,40H168a12,12,0,0,0,0,24h19l-7.8,7.8a75.55,75.55,0,0,1-53.32,22.26h-.43a75.49,75.49,0,0,1-53.09-21.63,12,12,0,0,0-16.78,17.16,99.38,99.38,0,0,0,69.87,28.47H126a99.42,99.42,0,0,0,70.16-29.29L204,189v19a12,12,0,0,0,24,0V160A12,12,0,0,0,216,148Z"
-                      ></path>
-                    </svg>
-                  </button>
-                  <img class="bg-banner" src="img/BANNER.png" />
-                  <div
-                    class="btn-action damage"
-                    onclick="changeLife('cardiD','minus')"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="20"
-                      height="20"
-                      fill="#000000"
-                      viewBox="0 0 256 256"
-                    >
-                      <path
-                        d="M228,128a12,12,0,0,1-12,12H40a12,12,0,0,1,0-24H216A12,12,0,0,1,228,128Z"
-                      ></path>
-                    </svg>
+                  <div class="life-controls-container">
+                    <button
+                      class="cure scale-on-hover"
+                      onclick="changeCardLife('cardiD','plus')"
+                    ></button>
+
+                    <input type="number" class="life-controls" value="1" />
+
+                    <button
+                      class="damage scale-on-hover"
+                      onclick="changeCardLife('cardiD','minus')"
+                    ></button>
                   </div>
 
-                  <img class="bg-heart" src="img/HEART.png" />
                   <input
                     type="number"
                     class="life-display"
@@ -241,46 +235,34 @@
                     value="20"
                   />
 
-                  <input type="number" class="life-controls" value="1" />
-
-                  <div
-                    class="btn-action cure"
-                    onclick="changeLife('$cardiD','plus')"
-                    id="cure"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="20"
-                      height="20"
-                      fill="#000000"
-                      viewBox="0 0 256 256"
-                    >
-                      <path
-                        d="M228,128a12,12,0,0,1-12,12H140v76a12,12,0,0,1-24,0V140H40a12,12,0,0,1,0-24h76V40a12,12,0,0,1,24,0v76h76A12,12,0,0,1,228,128Z"
-                      ></path>
-                    </svg>
-                  </div>
+                  <button
+                    class="btn-full-life scale-on-hover tooltip"
+                    onclick="changeLife('cardiD','reset')"
+                  ></button>
                 </div>
 
+                <div class="index">0</div>
                 <div class="ac">
-                  <img src="img/SHILD.png" class="full-background bg-shield" />
                   <p class="ac-display">15</p>
                 </div>
               </div>
 
-              <textarea
-                class="info"
-                onblur="saveInfo('cardiD')"
-                placeholder="Informações..."
-              >
- Informações aqui </textarea
-              >
+              <div class="info-container">
+                <p>Informações:</p>
+                <textarea
+                  class="info"
+                  onblur="saveInfo('cardiD')"
+                  placeholder="Nada para mostrar..."
+                ></textarea>
+              </div>
             </div> -->
           </div>
         </div>
 
         <div id="grid-controls">
-          <button class="scale-on-hover" onclick="resetBoard()">Reset</button>
+          <button class="scale-on-hover" onclick="resetCards()">
+            LIMPAR TELA
+          </button>
         </div>
       </div>
     </div>

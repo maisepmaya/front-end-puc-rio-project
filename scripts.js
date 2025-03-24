@@ -6,6 +6,29 @@ let blockCreate = false;
 
 // /*
 //   --------------------------------------------------------------------------------------
+//   Carregar items
+//   --------------------------------------------------------------------------------------
+// */
+
+window.addEventListener("load", async () => {
+  try {
+    const sheets = (await getAllSheetAPI()) ?? {};
+    Object.values(sheets).map((sheet) => insertSheet(sheet));
+
+    const cards = (await getAllCardsAPI()) ?? {};
+    Object.values(cards)
+      .sort((a, b) => a.index - b.index)
+      .map((card) => insertCard(card));
+  } catch (error) {
+    console.log(error);
+    alert("Ocorreu algum erro no carregamento. Sua página será reiniciada");
+  }
+
+  document.getElementById("load-page").remove();
+});
+
+// /*
+//   --------------------------------------------------------------------------------------
 //   API
 //   --------------------------------------------------------------------------------------
 // */
@@ -31,22 +54,16 @@ const getAllSheetAPI = async () => {
 const createSheetAPI = async (newSheet) => {
   const formData = new FormData();
 
-  console.log("Objeto -------------------------------------");
   Object.keys(newSheet).forEach((key) => {
     formData.append(key, newSheet[key]);
-    console.log(`${key}: ${typeof newSheet[key]}`);
   });
-
-  console.log("FormData -----------------------------------");
-  for (var pair of formData.entries()) {
-    console.log(`${pair[0]}: ${typeof pair[1]}`);
-  }
 
   let url = "http://127.0.0.1:5000/sheet/create";
   const res = await fetch(url, {
     method: "post",
     body: formData,
   }).then((response) => {
+    console.log(response);
     if (response.status == 200) return response.json();
     else throw Error(response.json().message);
   });
@@ -93,7 +110,7 @@ const createCardAPI = async (newCard) => {
 
   Object.keys(newCard).forEach((key) => formData.append(key, newCard[key]));
 
-  let url = "http://127.0.0.1:5000//card/create";
+  let url = "http://127.0.0.1:5000/card/create";
   const res = await fetch(url, {
     method: "post",
     body: formData,
@@ -103,25 +120,6 @@ const createCardAPI = async (newCard) => {
   });
 
   return res;
-
-  // return new Promise((resolve, reject) => {
-  //   setTimeout(() => {
-  //     const sheet = sheetObject[newCard.sheetId];
-
-  //     const card = {
-  //       id: sheet.id + "-" + newCard.index,
-  //       index: newCard.index,
-  //       sheetId: sheet.id,
-  //       maxLife: sheet.life,
-  //       currLife: sheet.life,
-  //       level: sheet.level,
-  //       ac: sheet.ac,
-  //       info: sheet.info,
-  //       name: sheet.name,
-  //     };
-  //     resolve(card);
-  //   }, 50);
-  // });
 };
 
 const deleteCardAPI = async (id) => {
@@ -139,21 +137,42 @@ const deleteCardAPI = async (id) => {
     return true;
   });
 };
-// /*
-//   --------------------------------------------------------------------------------------
-//   Carregar items
-//   --------------------------------------------------------------------------------------
-// */
 
-window.addEventListener("load", async () => {
-  const sheets = (await getAllSheetAPI()) ?? {};
-  Object.values(sheets).map((sheet) => insertSheet(sheet));
+const updateCardAPI = async (card) => {
+  const formData = new FormData();
 
-  const cards = (await getAllCardsAPI()) ?? {};
-  Object.values(cards)
-    .sort((a, b) => a.index - b.index)
-    .map((card) => insertCard(card));
-});
+  formData.append("id", card.id);
+  formData.append("index", card.index);
+  formData.append("currLife", card.currLife);
+  formData.append("info", card.info);
+
+  let url = "http://127.0.0.1:5000/card/update";
+  const res = await fetch(url, {
+    method: "put",
+    body: formData,
+  }).then((response) => {
+    if (response.status == 200) return response.json();
+    else throw Error(response.json().message);
+  });
+
+  return res;
+};
+
+const deleteAllCardsAPI = async () => {
+  let url = "http://127.0.0.1:5000/card/deleteAll";
+
+  await fetch(url, {
+    method: "delete",
+  }).then(async (response) => {
+    const res = await response.json();
+
+    if (response.status == 404) {
+      throw Error(res.message);
+    }
+
+    return true;
+  });
+};
 
 // /*
 //   --------------------------------------------------------------------------------------
@@ -233,24 +252,33 @@ const handleSheetClick = (dataId) => {
 //   Funções dos cartões
 //   --------------------------------------------------------------------------------------
 // */
-
+let count = 0;
 const createCard = async (newSheet) => {
   let index = 1;
   Object.values(cardObject).map((e) => {
     if (e.index >= index) index = e.index + 1;
   });
 
-  const baseObj = {
-    index,
-    sheet_id: newSheet.id,
-  };
-
   blockCardCreation(true);
-  const newCard = await createCardAPI(baseObj);
-  blockCardCreation(false);
 
-  cardObject[newCard.id] = newCard;
-  insertCard(newCard);
+  try {
+    const newCard = await createCardAPI({
+      index,
+      sheet_id: newSheet.id,
+    });
+    cardObject[newCard.id] = newCard;
+    insertCard(newCard);
+    count += 1;
+  } catch (error) {
+    alert(
+      "Parece que ocorreu um erro na criação desse cartão! Tente novamente."
+    );
+  }
+
+  setTimeout(() => {
+    blockCardCreation(false);
+    count = 0;
+  }, 1000);
 };
 
 const changeCardLife = (id, action) => {
@@ -261,13 +289,9 @@ const changeCardLife = (id, action) => {
 
   if (action === "lifeDisplay") {
     currCard.currLife = cardDisplay.value;
-    return;
-  }
-
-  if (action === "reset") {
+  } else if (action === "reset") {
     if (!confirm("Deseja restaurar a vida desse cartão?")) return;
-
-    currCard.currLife = currCard.maxLife;
+    currCard.currLife = currCard.life;
   } else if (action === "plus") {
     currCard.currLife = Number(currCard.currLife) + Number(cardInput.value);
   } else if (action === "minus") {
@@ -275,6 +299,8 @@ const changeCardLife = (id, action) => {
   }
 
   if (currCard.currLife <= 0) cardEl.classList.add("dead");
+  else if (currCard.currLife >= currCard.life) cardEl.classList.add("full");
+  else if (cardEl.classList.contains("full")) cardEl.classList.remove("full");
   else if (cardEl.classList.contains("dead")) cardEl.classList.remove("dead");
 
   cardDisplay.value = currCard.currLife;
@@ -285,8 +311,9 @@ const changeCardLife = (id, action) => {
 
 const saveCardInfo = (id) => {
   const currCard = cardObject[id];
-  const cardInput = document.querySelector(`[data-id="${id}"] > .info`);
+  const cardInput = document.querySelector(`[data-id="${id}"] > div > .info`);
 
+  console.log(cardInput);
   currCard.info = cardInput.value;
 
   processChange(currCard, "edit");
@@ -305,7 +332,7 @@ const deleteCard = (dataId, verification = true) => {
   }
 };
 
-const resetBoard = () => {
+const resetCards = async () => {
   if (
     !confirm(
       "Esta ação é irreversível. Todos os cartões serão excluídos. Deseja continuar?"
@@ -313,6 +340,11 @@ const resetBoard = () => {
   )
     return;
 
+  await deleteAllCardsAPI();
+  removeAllCards();
+};
+
+const removeAllCards = () => {
   cardObject = {};
 
   const items = document.querySelector("#card-list").querySelectorAll(".card");
@@ -342,15 +374,16 @@ const insertSheet = (newSheet) => {
   div.setAttribute("onclick", `handleSheetClick('${newSheet.id}')`);
 
   div.innerHTML = `
+                <div class="loading">
+                  <div class="spinner"></div>
+                </div>
                 <div class="picture">
                   <img src="${newSheet.icon}" class="full-background" />
-                </div>
-                <div class="content-bg">
-                  <img src="img/TAG.png" class="full-background" />
+                </div> 
+                <p>${newSheet.name}</p>
                   <div class="content">
-                    <p>${newSheet.name}</p>
-                    <p>${newSheet.level}</p>
-                    <button class="trash" id="delete-sheet">
+                    <p class="level" >${newSheet.level}</p>
+                    <button class="trash scale-on-hover" id="delete-sheet">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
@@ -364,7 +397,6 @@ const insertSheet = (newSheet) => {
                       </svg>
                     </button>
                   </div>
-                </div>
             `;
 
   div.querySelector("#delete-sheet").addEventListener("click", (e) => {
@@ -383,83 +415,66 @@ const insertCard = (newCard) => {
 
   div.classList.add("card");
 
+  if (newCard.currLife <= 0) div.classList.add("dead");
+  if (newCard.currLife >= newCard.life) div.classList.add("full");
+
   div.setAttribute("data-id", `${newCard.id}`);
 
   div.innerHTML = `
-      <img class="full-background" src="img/CARD.png" />
-
       <div class="header">
-        <p> ${newCard.index} - ${newCard.name} </p>
-        <p>${newCard.level} </p>
-        <button onclick="deleteCard('${newCard.id}')" class="close-card scale-on-hover">
-          X
-        </button>
+        <p>${newCard.name}</p>
+        <p class="level">${newCard.level}</p>
       </div>
+
+      <button
+        onclick="deleteCard('${newCard.id}')"
+        class="close-btn scale-on-hover"
+      ></button>
 
       <div class="middle">
         <div class="life">
-          <button class="btn-full-life" onclick="changeCardLife('${newCard.id}','reset')">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              fill="#fffafa"
-              viewBox="0 0 256 256"
-            >
-              <path d="M88,108H40A12,12,0,0,1,28,96V48a12,12,0,0,1,24,0V67l7.8-7.8A99.42,99.42,0,0,1,130,29.94h.56a99.38,99.38,0,0,1,69.87,28.47,12,12,0,0,1-16.78,17.16,76,76,0,0,0-106.84.63L69,84H88a12,12,0,0,1,0,24Zm128,40H168a12,12,0,0,0,0,24h19l-7.8,7.8a75.55,75.55,0,0,1-53.32,22.26h-.43a75.49,75.49,0,0,1-53.09-21.63,12,12,0,0,0-16.78,17.16,99.38,99.38,0,0,0,69.87,28.47H126a99.42,99.42,0,0,0,70.16-29.29L204,189v19a12,12,0,0,0,24,0V160A12,12,0,0,0,216,148Z"></path>
-            </svg>
-          </button>
+          <div class="life-controls-container">
+            <button
+              class="cure scale-on-hover"
+              onclick="changeCardLife('${newCard.id}','plus')"
+            ></button>
 
-          <img class="bg-banner" src="img/BANNER.png" />
-          <div class="btn-action damage" onclick="changeCardLife('${newCard.id}','minus')">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              fill="#000000"
-              viewBox="0 0 256 256"
-            >
-              <path d="M228,128a12,12,0,0,1-12,12H40a12,12,0,0,1,0-24H216A12,12,0,0,1,228,128Z"></path>
-            </svg>
+            <input type="number" class="life-controls" value="1" />
+
+            <button
+              class="damage scale-on-hover"
+              onclick="changeCardLife('${newCard.id}','minus')"
+            ></button>
           </div>
 
-          <img class="bg-heart" src="img/HEART.png" />
           <input
             type="number"
             class="life-display"
             onblur="changeCardLife('${newCard.id}','lifeDisplay')"
             value="${newCard.currLife}"
           />
-          <input type="number" class="life-controls" value="1" />
 
-          <div
-            class="btn-action cure"
-            onclick="changeCardLife('${newCard.id}','plus')"
-            id="cure"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              fill="#000000"
-              viewBox="0 0 256 256"
-            >
-              <path d="M228,128a12,12,0,0,1-12,12H140v76a12,12,0,0,1-24,0V140H40a12,12,0,0,1,0-24h76V40a12,12,0,0,1,24,0v76h76A12,12,0,0,1,228,128Z"></path>
-            </svg>
-          </div>
+          <button
+            class="btn-full-life scale-on-hover tooltip"
+            onclick="changeCardLife('${newCard.id}','reset')"
+          ></button>
         </div>
 
+        <div class="index">${newCard.index}</div>
         <div class="ac">
-          <img src="img/SHILD.png" class="bg-shield full-background" />
           <p class="ac-display">${newCard.ac}</p>
         </div>
       </div>
 
-      <textarea
-        class="info"
-        onblur="saveCardInfo('${newCard.id}')"
-        placeholder="Informações..."
-      >${newCard.info}</textarea>`;
+      <div class="info-container">
+        <p>Informações:</p>
+        <textarea
+          class="info"
+          spellcheck="false"
+          onblur="saveCardInfo('${newCard.id}')"
+          placeholder="Nada para mostrar..."
+        >${newCard.info ?? ""}</textarea>
+      </div>`;
 
   list.append(div);
   return null;
@@ -477,7 +492,6 @@ const removeSheet = (dataId) => {
   let cardList = [];
 
   Object.values(cardObject).forEach((card) => {
-    console.log(card);
     if (card.sheet_id == dataId) cardList.push(card.id);
   });
 
@@ -523,6 +537,7 @@ const resetForm = () => {
    Outros
   --------------------------------------------------------------------------------------
 */
+
 const debounce = (callback, wait) => {
   let timeoutId = null;
   return (...args) => {
@@ -533,8 +548,8 @@ const debounce = (callback, wait) => {
   };
 };
 
-function saveData(param, action) {
-  console.log("Salvando os dados:", param, action);
+function saveCard(card) {
+  updateCardAPI(card);
 }
 
-const processChange = debounce(saveData, 500);
+const processChange = debounce(saveCard, 500);
