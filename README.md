@@ -31,7 +31,7 @@ Execute a [API do HordaMater](https://github.com/maisepmaya/back-end-puc-rio-pro
 
 
 Agora basta abrir o arquivo index.html no seu browser.
-##⚔️ Funcionalidades
+## ⚔️ Funcionalidades
 
 -  **Criação de Fichas de Inimigos**: Permite a inserção de informações detalhadas sobre cada tipo de inimigo, como nome, nível, pontos de vida e descrições personalizadas.
 
