@@ -10,6 +10,9 @@ O HordaMaster é uma aplicação projetada para auxiliar mestres de RPG a gerenc
 
 Com uma interface intuitiva, os usuários podem adicionar instâncias desses inimigos a um grid, que os lista sequencialmente (por exemplo, Goblin 1, Goblin 2, Goblin 3). Além disso, é possível ajustar os pontos de vida diretamente na tela durante o andamento do jogo, facilitando o acompanhamento em tempo real.
 
+## 🎯 Propósito
+Este projeto faz parte da minha pós-graduação em desenvolvimento full-stack e foi criado com o objetivo de aprimorar habilidades práticas em frontend, além de oferecer uma solução útil para a comunidade de RPG. 
+Para a API que gerencia os dados no backend, confira o repositório do [HordaMaster API](https://github.com/maisepmaya/back-end-puc-rio-project.git).    
 
 ## 🚀 Tecnologias utilizada
 
@@ -50,6 +53,3 @@ Agora basta abrir o arquivo index.html no seu browser.
 ├── img/            # Imagens e ícones utilizados
 └── README.md       # Documentação do projeto
 ```
-## 🎯 Propósito
-Este projeto faz parte da minha pós-graduação em desenvolvimento full-stack e foi criado com o objetivo de aprimorar habilidades práticas em frontend, além de oferecer uma solução útil para a comunidade de RPG. 
-Para a API que gerencia os dados no backend, confira o repositório do [HordaMaster API](https://github.com/maisepmaya/back-end-puc-rio-project.git).    
