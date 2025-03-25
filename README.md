@@ -12,6 +12,7 @@ Com uma interface intuitiva, os usuários podem adicionar instâncias desses ini
 
 ## 🎯 Propósito
 Este projeto faz parte da minha pós-graduação em desenvolvimento full-stack e foi criado com o objetivo de aprimorar habilidades práticas em frontend, além de oferecer uma solução útil para a comunidade de RPG. 
+
 Para a API que gerencia os dados no backend, confira o repositório do [HordaMaster API](https://github.com/maisepmaya/back-end-puc-rio-project.git).    
 
 ## 🚀 Tecnologias utilizada
