@@ -34,7 +34,7 @@ Clone o projeto
 Execute a [API do HordaMater](https://github.com/maisepmaya/back-end-puc-rio-project.git).
 
 
-Agora basta abrir o arquivo index.html no seu browser.
+Agora basta abrir o arquivo index.html no seu navegador.
 ## ⚔️ Funcionalidades
 
 -  **Criação de Fichas de Inimigos**: Permite a inserção de informações sobre cada tipo de inimigo, como nome, nível, pontos de vida, classe de armadura e descrições personalizadas.
