@@ -505,7 +505,7 @@ textarea:focus {
 }
 
 .dead .life-display {
-  transform: rotate(-12px);
+  transform: rotate(-12deg);
   background-image: url("img/broke-heart.png");
   background-size: 80px;
 }

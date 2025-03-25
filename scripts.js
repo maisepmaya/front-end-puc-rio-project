@@ -298,10 +298,13 @@ const changeCardLife = (id, action) => {
     currCard.currLife = Number(currCard.currLife) - Number(cardInput.value);
   }
 
-  if (currCard.currLife <= 0) cardEl.classList.add("dead");
-  else if (currCard.currLife >= currCard.life) cardEl.classList.add("full");
-  else if (cardEl.classList.contains("full")) cardEl.classList.remove("full");
+  if (currCard.currLife <= 0 && !cardEl.classList.contains("dead"))
+    cardEl.classList.add("dead");
   else if (cardEl.classList.contains("dead")) cardEl.classList.remove("dead");
+
+  if (currCard.currLife >= currCard.life && !cardEl.classList.contains("full"))
+    cardEl.classList.add("full");
+  else if (cardEl.classList.contains("full")) cardEl.classList.remove("full");
 
   cardDisplay.value = currCard.currLife;
   cardInput.value = 1;
