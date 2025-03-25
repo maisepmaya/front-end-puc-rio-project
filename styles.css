@@ -312,7 +312,7 @@ textarea:focus {
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 260px;
+  height: 270px;
 }
 
 .dead {
@@ -400,11 +400,12 @@ textarea:focus {
 
 .index {
   position: absolute;
-  left: 0;
-  bottom: 27px;
+  width: 29px;
+  left: 3px;
+  text-align: center;
+  bottom: 30px;
   color: rgb(231, 213, 179);
   font-size: larger;
-  padding-inline: 0.75rem;
   z-index: 2;
 }
 
